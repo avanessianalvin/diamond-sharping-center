@@ -15,6 +15,8 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @SequenceGenerator(name = "default_seq")
     long id;
-    @Column(columnDefinition = "BIGINT")
+    @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "CHARACTER VARYING(8)")
     Roles role;
+
 }

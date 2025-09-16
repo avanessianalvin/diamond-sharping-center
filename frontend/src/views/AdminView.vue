@@ -1,14 +1,14 @@
 <template>
-Admin
+Admin Page
 
-  <user-list/>
+  <user-table/>
 </template>
 
 <script>
-import UserList from "@/components/menu/UserList.vue";
+import UserTable from "@/components/menu/UserTable.vue";
 export default {
   name: "AdminView",
-  components: {UserList}
+  components: {UserTable}
 }
 </script>
 

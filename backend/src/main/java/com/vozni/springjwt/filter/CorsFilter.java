@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 
 @Component
-@Order(0) // run very early
+@Order(Integer.MIN_VALUE) // run very early, cors filter should run before any config
 public class CorsFilter implements Filter {
 
     @Override

@@ -1,10 +1,6 @@
 <template>
   <h2>Dashboard</h2>
   <user-welcome/>
-
-  <v-btn @click="pingUser">ping user</v-btn>
-  <v-btn @click="pingAdmin">ping admin</v-btn>
-
 </template>
 
 <script>

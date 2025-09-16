@@ -31,7 +31,7 @@ api.interceptors.request.use(async (config) => {
       // Refresh before sending request
       try {
         const refreshResponse = await refreshApi.post('/auth/refresh');
-        const newToken = refreshResponse.data.data.accessToken;
+        const newToken = refreshResponse.data.payload.accessToken;
         authStore.accessToken = newToken;
         sessionStorage.setItem("accessToken",newToken)
         token = newToken;
@@ -73,7 +73,7 @@ api.interceptors.response.use(
       try {
         // Use refreshApi (no interceptors) to avoid recursion
         const refreshResponse = (await refreshApi.post('/auth/refresh'));
-        const newAccessToken = refreshResponse.data.data.accessToken;
+        const newAccessToken = refreshResponse.data.payload.accessToken;
         useAuthStore().accessToken = newAccessToken
 
         // Retry original request with new token

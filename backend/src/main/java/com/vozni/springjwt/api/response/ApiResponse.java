@@ -18,23 +18,23 @@ import java.time.Instant;
 public class ApiResponse<T> {
     boolean success;
     String message;
-    T data;
+    T payload;
     String error;
     Instant timestamp;
 
 
-    public static <T> ApiResponse<T> success(T data) {
+    public static <T> ApiResponse<T> success(T payload) {
         return ApiResponse.<T>builder()
                 .success(true)
-                .data(data)
+                .payload(payload)
                 .timestamp(Instant.now())
                 .build();
     }
 
-    public static <T> ApiResponse<T> success(T data, String message) {
+    public static <T> ApiResponse<T> success(T payload, String message) {
         return ApiResponse.<T>builder()
                 .success(true)
-                .data(data)
+                .payload(payload)
                 .message(message)
                 .timestamp(Instant.now())
                 .build();

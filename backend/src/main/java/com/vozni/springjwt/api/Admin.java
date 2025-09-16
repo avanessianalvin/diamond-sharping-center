@@ -4,31 +4,29 @@ import com.vozni.springjwt.api.response.ApiResponse;
 import com.vozni.springjwt.model.entity.User;
 import com.vozni.springjwt.model.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RequestMapping("/api/admin")
 @RestController
 @AllArgsConstructor
 public class Admin {
     private UserService userService;
 
+
     @GetMapping("/ping")
-    public ResponseEntity<?> ping(){
-        return ResponseEntity.ok(ApiResponse.success(null).setMessage(String.valueOf(System.currentTimeMillis())));
-        }
-
-    @PostMapping("/user/remove")
-    public ResponseEntity<ApiResponse<?>> removeUser(@RequestBody User user){
-        userService.remove(user);
-        return ResponseEntity.ok(ApiResponse.success("User is removed"));
+    public ResponseEntity<?> ping() {
+        log.error("/ping");
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = (auth == null) ? null : auth.getName();
+        return ResponseEntity.ok(ApiResponse.success("Hello" + username).setMessage(String.valueOf(System.currentTimeMillis())));
     }
-
-    @GetMapping("/user/all")
-    public ResponseEntity<ApiResponse<?>> allUsers(){
-        return ResponseEntity.ok(ApiResponse.success(userService.getAll()));
-    }
-
 
 
 }

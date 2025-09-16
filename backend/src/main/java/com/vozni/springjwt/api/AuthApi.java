@@ -9,6 +9,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -97,22 +100,6 @@ public class AuthApi {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,deleteCookie.toString()).body(ApiResponse.success(null).setMessage("Logged out successfully"));
     }
 
-    @GetMapping("/me")
-    public ResponseEntity<ApiResponse<?>> me(HttpServletRequest request){
-        String authHeader = request.getHeader("Authorization");
 
-        if(authHeader != null && authHeader.startsWith("Bearer ")){
-            String token = authHeader.substring(7);
-            if(jwtUtil.validateToken(token)) {
-                Claims claims = jwtUtil.getClaims(token);
-                String username = claims.getSubject();
-                if (username != null) {
-                    User user = userService.get(username);
-                    return ResponseEntity.ok(ApiResponse.success(user));
-                }
-            }
-        }
-        throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Not logged in");
-    }
 
 }

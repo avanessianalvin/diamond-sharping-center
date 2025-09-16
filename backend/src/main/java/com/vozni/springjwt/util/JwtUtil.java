@@ -10,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Component
@@ -67,6 +68,9 @@ public class JwtUtil {
                 .getBody()
                 .getSubject();
     }
+    public String getUsername(Claims claims) {
+        return claims.getSubject();
+    }
 
     public Claims getClaims(String token) {
         return Jwts.parserBuilder()
@@ -74,5 +78,9 @@ public class JwtUtil {
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public List<String> getRoles(Claims claims) {
+        return claims.get("roles", List.class);
     }
 }

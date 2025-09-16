@@ -38,9 +38,9 @@ export const useAuthStore = defineStore('auth', {
           password,
         })
 
-        this.accessToken = response.data.data.accessToken
+        this.accessToken = response.data.payload.accessToken
         sessionStorage.setItem("accessToken",this.accessToken)
-        this.setUser(response.data.data.user)
+        this.setUser(response.data.payload.user)
         router.push("/dashboard")
         console.log("you are logged in")
 
@@ -53,9 +53,9 @@ export const useAuthStore = defineStore('auth', {
     },
 
     checkLogin() {
-      api.get("/auth/me")
+      api.get("/user/me")
         .then(r=>{
-          this.setUser(r.data.data)
+          this.setUser(r.data.payload)
         }).catch((e)=>{
           sessionStorage.clear()
         console.log("not logged in")
