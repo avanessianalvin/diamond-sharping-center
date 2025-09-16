@@ -1,35 +1,64 @@
-# vue-project
+# Spring Boot + Vue 3 Full-Stack Starter
 
-This template should help get you started developing with Vue 3 in Vite.
+A ready-to-start full-stack boilerplate for building applications with **Spring Boot (JWT security)** and a **Vue 3 + Vuetify** dashboard frontend.**
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## ✨ Features
+- **Authentication & Authorization**
+    - JWT-based security with Spring Security
+    - Role-based access control (e.g. `ADMIN`, `USER`)
+- **Backend**
+    - Spring Boot 3
+    - Hibernate & JPA
+    - PostgreSQL database
+    - Centralized logging (SLF4J/Logback)
+    - Lombok for cleaner entity/DTO code
+- **Frontend**
+    - Vue 3 + Vite
+    - Vuetify 3 (Material Design)
+    - Dashboard layout with login/logout
+    - Server-side pagination & search example
+- **API**
+    - RESTful endpoints
+    - Pagination & filtering
+    - JSON responses
 
-## Customize configuration
+---
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 🛠 Tech Stack
+| Layer        | Technology                  |
+|--------------|-----------------------------|
+| Backend      | Spring Boot, Spring Security, Hibernate, Lombok |
+| Database     | PostgreSQL                  |
+| Frontend     | Vue 3, Vuetify 3, Axios     |
+| Build Tools  | Maven (backend), Vite (frontend) |
 
-## Project Setup
+---
 
-```sh
+## 🚀 Getting Started
+
+### Prerequisites
+- Java 17+
+- Node.js 18+
+- PostgreSQL 14+
+- Maven 3.9+
+
+### Backend Setup
+```bash
+# clone repo and enter backend folder if you separated them
+cd backend
+cp src/main/resources/application.example.yml src/main/resources/application.yml
+# edit DB credentials & JWT secret in application.yml
+mvn clean install
+mvn spring-boot:run
+```
+### Frontend Setup
+```bash
+cd frontend
 npm install
+npm run serve
 ```
 
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
-```
+### 🔑 Environment Variables
+- application.properties
