@@ -1,0 +1,48 @@
+name: Build and Deploy Full Stack App
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Build frontend
+      - name: Build Vue frontend
+        working-directory: ./frontend
+        run: |
+          npm install
+          npm run build
+
+      # Build backend (with frontend already in /static)
+      - name: Build Spring Boot backend
+        working-directory: ./backend
+        run: |
+          ./mvnw clean package -DskipTests
+
+      # Deploy final JAR to VPS
+      - name: Deploy JAR to VPS
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          source: "./backend/target/*.jar"
+          target: "C:/apps/myproject"
+
+      # Restart backend on VPS (optional, if you run it as a service)
+      - name: Restart application
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_KEY }}
+          script: |
+            taskkill /IM java.exe /F
+            cd C:\apps\myproject
+            java -jar myproject.jar > app.log 2>&1 &
