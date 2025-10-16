@@ -33,10 +33,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            md C:\ROOT\hama\dir1 & md C:\ROOT\hama\dir2  &
-            echo Killing process on port 8090!!!... >> C:\root\hama\deploy.log &
-            for /f "tokens=5" %a in ('netstat -ano ^| find ":8090"') do taskkill /PID %a /F &
-            del /Q C:\ROOT\hama\backend\target\*.jar
+            md C:\ROOT\hama\dir1 & md C:\ROOT\hama\dir2 & echo Killing process on port 8090!!!... >> C:\root\hama\deploy.log & for /f "tokens=5" %a in ('netstat -ano ^| find ":8090"') do taskkill /PID %a /F & del /Q C:\ROOT\hama\backend\target\*.jar
 
       # 2️⃣ Copy new JAR
       - name: Deploy JAR to VPS
