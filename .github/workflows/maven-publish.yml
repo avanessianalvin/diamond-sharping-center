@@ -27,7 +27,7 @@ jobs:
 
       # 1️⃣ Stop and clean old app
       - name: Stop old app on VPS
-        uses: appleboy/ssh-action@v1.0.4
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
