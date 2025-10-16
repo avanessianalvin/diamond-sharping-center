@@ -26,8 +26,8 @@ jobs:
           cp -r ./frontend/dist/* ./backend/src/main/resources/static/
 
       # 4️⃣ Make Maven Wrapper executable
-      - name: Make Maven Wrapper
-        run: chmod +x ./backend/mvnw
+      # - name: Make Maven Wrapper
+      #  run: chmod +x ./backend/mvnw
 
       # 5️⃣ Build backend
       - name: Build Spring Boot backend
