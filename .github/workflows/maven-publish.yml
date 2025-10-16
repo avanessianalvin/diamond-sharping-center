@@ -63,7 +63,7 @@ jobs:
           source: "./backend/target/*.jar"
           target: "C:/root/hama"
 
-      # 7️⃣ Restart backend on VPS (stop old app by port, start new JAR)
+      # 7️⃣ Restart backend on VPS (stop old app by port, start new JAR).
       - name: Restart backend on VPS
         uses: appleboy/ssh-action@v0.1.10
         with:
