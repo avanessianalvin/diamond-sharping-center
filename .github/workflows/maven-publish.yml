@@ -54,6 +54,5 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script_shell: "cmd"
           script: |
-            cd C:\ROOT\hama\backend\target
-            for %f in (*.jar) do start "" java -jar "%f" --server.port=8090
+            cd C:\ROOT\hama\backend\target & for %f in (*.jar) do start "" java -jar "%f" --server.port=8090
        
