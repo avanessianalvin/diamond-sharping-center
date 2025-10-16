@@ -42,10 +42,13 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
             echo "Killing process on port 8090..."
-            for /f "tokens=5" %a in ('netstat -ano ^| find ":8090"') do taskkill /PID %a /F
-            echo "Cleaning old files..."
-            del /Q C:\root\hama\backend\target\*.jar
-            echo "Ready for new upload"        
+            for /f "tokens=5" %%a in ('netstat -ano ^| find ":8090"') do taskkill /PID %%a /F
+            timeout /t 5 /nobreak >nul
+            echo "Deleting old files..."
+            del /F /Q C:\root\hama\backend\target\*.jar
+            echo "Verifying delete..."
+            dir C:\root\hama\backend\target
+            echo "Clean complete"        
 
       # 6️⃣ Deploy backend JAR to VPS
       - name: Deploy JAR to VPS
