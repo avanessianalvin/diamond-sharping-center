@@ -18,5 +18,9 @@ export default defineConfig({
   server:{
     port:3000,
     open:true //open browser
+  },
+
+  build: {
+    outDir: '../backend/src/main/resources/static'
   }
 })
