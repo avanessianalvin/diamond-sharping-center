@@ -9,25 +9,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Build frontend
+      # 2️⃣ Build frontend
       - name: Build Vue frontend
         working-directory: ./frontend
         run: |
           npm install
           npm run build
 
-      # Build backend (with frontend already in /static)
+      # 3️⃣ Copy frontend build to backend /static
+      - name: Copy frontend build to backend
+        run: |
+          cp -r ./frontend/dist/* ./backend/src/main/resources/static/
+
+      # 4️⃣ Make Maven Wrapper executable
       - name: Make Maven Wrapper
         run: chmod +x ./backend/mvnw
+
+      # 5️⃣ Build backend
       - name: Build Spring Boot backend
         working-directory: ./backend
-        run: |
-          ./mvnw clean package -DskipTests
+        run: ./mvnw clean package -DskipTests
 
-      # Deploy final JAR to VPS
+      # 6️⃣ Deploy backend JAR to VPS
       - name: Deploy JAR to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -35,19 +42,19 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "./backend/target/*.jar"
-          target: "C:/root/hama
+          target: "C:/apps/myapp/backend/target"
 
-      # Restart backend jar
-      - name: Restart jar
+      # 7️⃣ Restart backend on VPS (stop old app by port, start new JAR)
+      - name: Restart backend on VPS
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          script:
-            echo Stopping existing app...
-            for /f "tokens=2" %a in ('tasklist /v ^| find "C:\apps\myapp\backend\target"') do taskkill /PID %a /F
+          script: |
+            echo "Stopping existing app on port 8090..."
+            for /f "tokens=5" %%a in ('netstat -ano ^| find ":8090"') do taskkill /PID %%a /F
 
-            echo Starting new version...
-            cd c:\root\hama\backend\target
-            for %f in (*.jar) do start "" java -jar "%f" --server.port=8090
+            echo "Starting new version..."
+            cd C:\apps\myapp\backend\target
+            for %%f in (*.jar) do start "" java -jar "%%f" --server.port=8090
