@@ -27,15 +27,16 @@ jobs:
 
       # 1️⃣ Stop and clean old app
       - name: Stop old app on VPS
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v1.0.4
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-        script: |
-          cmd /c "echo Killing process on port 8090... >> C:\root\hama\deploy.log"
-          cmd /c "for /f \"tokens=5\" %a in ('netstat -ano ^| find \":8090\" ^| find \"LISTENING\"') do taskkill /PID %a /F"
-          cmd /c "del /Q C:\root\hama\backend\target\*.jar"
+          script_shell: "cmd"
+          script: |
+            echo Killing process on port 8090... >> C:\root\hama\deploy.log
+            for /f "tokens=5" %a in ('netstat -ano ^| find ":8090"') do taskkill /PID %a /F
+            del /Q C:\root\hama\backend\target\*.jar
 
       # 2️⃣ Copy new JAR
       - name: Deploy JAR to VPS
