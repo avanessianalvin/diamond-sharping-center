@@ -20,6 +20,8 @@ jobs:
           npm run build
 
       # Build backend (with frontend already in /static)
+      - name: Make Maven Wrapper
+        run: chmod +x ./backend/mvnw
       - name: Build Spring Boot backend
         working-directory: ./backend
         run: |
