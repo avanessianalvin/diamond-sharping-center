@@ -34,6 +34,19 @@ jobs:
         working-directory: ./backend
         run: ./mvnw clean package -DskipTests
 
+      - name: Stop old app
+        uses: appleboy/ssh-action@v0.1.10
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            echo "Killing process on port 8090..."
+            for /f "tokens=5" %a in ('netstat -ano ^| find ":8090"') do taskkill /PID %a /F
+            echo "Cleaning old files..."
+            del /Q C:\root\hama\backend\target\*.jar
+            echo "Ready for new upload"        
+
       # 6️⃣ Deploy backend JAR to VPS
       - name: Deploy JAR to VPS
         uses: appleboy/scp-action@v0.1.4
@@ -52,9 +65,6 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            echo "Stopping existing app on port 8090..."
-            for /f "tokens=5" %a in ('netstat -ano ^| find ":8090"') do taskkill /PID %a /F
-
             echo "Starting new version..."
             cd C:\root\hama\backend\target
             for %f in (*.jar) do start "" java -jar "%f" --server.port=8090
