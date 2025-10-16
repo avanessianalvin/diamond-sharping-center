@@ -50,10 +50,13 @@ jobs:
 
       # 3️⃣ Start new version in background
       - name: Start new app
-        uses: appleboy/ssh-action@v0.1.10
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          script_shell: "cmd"
           script: |
-            cmd /c "cd C:\root\hama && for %f in (*.jar) do start \"\" cmd /c \"java -jar %f --server.port=8090 >> C:\root\hama\app.log 2>&1\""
+            cd c:\root\hama\backend\target
+            for %f in (*.jar) do start "" java -jar "%f" --server.port=8090
+       
