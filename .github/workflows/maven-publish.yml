@@ -35,16 +35,19 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "./backend/target/*.jar"
-          target: "C:/root/hama"
+          target: "C:/root/hama
 
-      # Restart backend on VPS (optional, if you run it as a service)
-      - name: Restart application
+      # Restart backend jar
+      - name: Restart jar
         uses: appleboy/ssh-action@v0.1.10
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            taskkill /IM java.exe /F
-            cd C:\root\hama
-            java -jar myproject.jar > app.log 2>&1 &
+          script:
+            echo Stopping existing app...
+            for /f "tokens=2" %a in ('tasklist /v ^| find "C:\apps\myapp\backend\target"') do taskkill /PID %a /F
+
+            echo Starting new version...
+            cd c:\root\hama\backend\target
+            for %f in (*.jar) do start "" java -jar "%f" --server.port=8090
