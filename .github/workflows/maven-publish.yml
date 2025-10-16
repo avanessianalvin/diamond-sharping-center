@@ -41,8 +41,11 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            echo "Killing process on port 8090..."
-            for /f "tokens=5" %a in ('netstat -ano ^| find ":8090"') do taskkill /PID %a /F
+            echo "Killing process on port 8090..." >> c:\root\hama\1.txt
+            for %f in (*.jar) do (
+            echo Running: java -jar "%f"
+            start "" cmd /c "java -jar \"%f\" --server.port=8090 >> C:\root\hama\1.txt 2>&1"
+            )
             timeout /t 5 /nobreak >nul
             echo "Deleting old files..."
             del /F /Q C:\root\hama\backend\target\*.jar
