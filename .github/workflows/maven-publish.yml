@@ -42,7 +42,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "./backend/target/*.jar"
-          target: "C:/root/hama/backend/target"
+          target: "C:/root/hama"
 
       # 7️⃣ Restart backend on VPS (stop old app by port, start new JAR)
       - name: Restart backend on VPS
