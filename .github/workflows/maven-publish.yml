@@ -44,7 +44,7 @@ jobs:
             echo "Killing process on port 8090..." >> c:\root\hama\1.txt
             for %f in (*.jar) do (
             echo Running: java -jar "%f"
-            start "" cmd /c "java -jar \"%f\" --server.port=8090 >> C:\root\hama\1.txt 2>&1"
+            start "" cmd /c "java -jar \"%f\" --server.port=8090 >> C:\root\hama\1.txt 2>>&1"
             )
             timeout /t 5 /nobreak >nul
             echo "Deleting old files..."
