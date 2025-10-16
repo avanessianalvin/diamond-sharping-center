@@ -9,56 +9,78 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2️⃣ Build Vue frontend
       - name: Build Vue frontend
         working-directory: ./frontend
         run: |
           npm install
           npm run build
 
+      # 3️⃣ Make Maven Wrapper executable
       - name: Make Maven Wrapper executable
         run: chmod +x ./backend/mvnw
 
+      # 4️⃣ Build Spring Boot backend
       - name: Build Spring Boot backend
         working-directory: ./backend
         run: ./mvnw clean package -DskipTests
 
-      # 1️⃣ Stop and clean old app
+      # 5️⃣ Stop old app on VPS safely
       - name: Stop old app on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          script: for /f "tokens=5" %a in ('netstat -ano ^| find ":8090"') do taskkill /PID %a /F || echo ERROR1
+          script: |
+            cmd /c "echo === [$(date /t) $(time /t)] Stopping old app === >> C:\root\hama\deploy.log"
+            cmd /c "netstat -ano | find \":8090\" >nul && (
+              echo Found process on port 8090, terminating... >> C:\root\hama\deploy.log &
+              for /f \"tokens=5\" %a in ('netstat -ano ^| find \":8090\"') do taskkill /PID %a /F >> C:\root\hama\deploy.log 2>&1
+            ) || echo No process found on port 8090 >> C:\root\hama\deploy.log"
+            cmd /c "echo Done stopping old app. >> C:\root\hama\deploy.log"
 
-      - name: remove old app on VPS
+      # 6️⃣ Remove old JARs
+      - name: Clean old JARs on VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          script: del /Q C:\ROOT\hama\backend\target\*.jar || echo ERROR2
+          script: |
+            cmd /c "echo === Cleaning old JARs === >> C:\root\hama\deploy.log"
+            cmd /c "if exist C:\root\hama\backend\target\*.jar (
+              del /Q C:\root\hama\backend\target\*.jar >> C:\root\hama\deploy.log 2>&1
+              echo Old JARs deleted. >> C:\root\hama\deploy.log
+            ) else (
+              echo No JAR files to delete. >> C:\root\hama\deploy.log
+            )"
 
-      # 2️⃣ Copy new JAR
-      - name: Deploy JAR to VPS
+      # 7️⃣ Deploy new JAR
+      - name: Deploy new JAR to VPS
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "./backend/target/*.jar"
-          target: "C:/ROOT/hama"
+          target: "C:/root/hama/backend/target"
 
-      # 3️⃣ Start new version in background
+      # 8️⃣ Start new version in background
       - name: Start new app
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          script_shell: "cmd"
           script: |
-            cd C:\ROOT\hama\backend\target & for %f in (*.jar) do start "" java -jar "%f" --server.port=8090
+            cmd /c "echo === Starting new app === >> C:\root\hama\deploy.log"
+            cmd /c "cd C:\root\hama\backend\target && for %f in (*.jar) do (
+              echo Launching %f... >> C:\root\hama\deploy.log &
+              start \"\" cmd /c \"java -jar %f --server.port=8090 >> C:\root\hama\app.log 2>&1\"
+            )"
+            cmd /c "echo New app started successfully. >> C:\root\hama\deploy.log"
