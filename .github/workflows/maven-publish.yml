@@ -29,7 +29,7 @@ jobs:
       - name: Make Maven Wrapper
         run: chmod +x ./backend/mvnw
 
-      # 5️⃣ Build backend
+      # 5️⃣ Build backend.
       - name: Build Spring Boot backend
         working-directory: ./backend
         run: ./mvnw clean package -DskipTests
