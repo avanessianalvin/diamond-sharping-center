@@ -35,7 +35,7 @@ jobs:
           script: |
             cmd /c "echo Killing process on port 8090... >> C:\root\hama\deploy.log"
             cmd /c "for /f \"tokens=5\" %a in ('netstat -ano ^| find \":8090\" ^| find \"LISTENING\"') do taskkill /PID %a /F"
-            cmd /c "del /Q C:\root\hama\*.jar"
+            cmd /c "del /Q C:\root\hama\backend\target\*.jar"
 
       # 2️⃣ Copy new JAR
       - name: Deploy JAR to VPS
