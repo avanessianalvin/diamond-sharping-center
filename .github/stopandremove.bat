@@ -7,6 +7,8 @@ for /f "tokens=5" %%a in ('netstat -ano ^| find ":8090"') do (
     taskkill /F /PID %%a >nul 2>&1
 )
 
+timeout /t 5 >nul
+
 echo === [Starting new app] ===
 cd backend\target
 rem Run the only JAR file in folder
