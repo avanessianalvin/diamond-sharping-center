@@ -1,4 +1,4 @@
-name: Build and Deploy Full Stack App
+name: Test to run app
 
 on:
   push:
