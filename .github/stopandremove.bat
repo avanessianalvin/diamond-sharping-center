@@ -1,7 +1,7 @@
 @echo off
 echo === [Stopping old app on port 8090] ===
 
-cd C:\root\hama\backend\target
+cd C:\root\hama
 md dir1
 
 rem Kill process using port 8090 (if any)
@@ -19,7 +19,7 @@ for %%f in (*.jar) do (
     echo Starting %%f ...
     start "" java -jar "%%f" --server.port=8090
 )
-
+cd C:\root\hama
 md dir2
 
 echo === [Done] ===
