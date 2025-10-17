@@ -34,3 +34,24 @@ jobs:
           script: |
             C:\ROOT\hama\stopandremove.bat
 
+      # 7️⃣ Copy new JAR
+      - name: Deploy JAR to VPS
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: "./.github/start.bat"
+          target: "C:/root/hama/"
+          strip_components: 2
+
+      # 5️⃣ Start new app
+      - name: Start new app
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            C:\ROOT\hama\start.bat
+
